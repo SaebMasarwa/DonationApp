@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Pressable, SafeAreaView, ScrollView, View} from 'react-native';
+import {Text, SafeAreaView, ScrollView, View} from 'react-native';
 
 import style2 from './style';
 import globalStyle from '../../assets/styles/globalStyle';
@@ -8,11 +8,14 @@ import Input from '../../components/Input/Input';
 import Header from '../../components/Header/Header';
 import Button from '../../components/Button/Button';
 import BackButton from '../../components/BackButton/BackButton';
+import {createUser} from '../../api/user';
 
 const Registration = ({navigation}) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
 
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
@@ -48,8 +51,25 @@ const Registration = ({navigation}) => {
             onChangeText={value => setPassword(value)}
           />
         </View>
+        {error.length > 0 && <Text style={style2.error}>{error}</Text>}
+        {success.length > 0 && <Text style={style2.success}>{success}</Text>}
         <View style={globalStyle.marginBottom24}>
-          <Button title={'Registration'} />
+          <Button
+            isDisabled={
+              fullName.length <= 2 || email.length <= 5 || password.length <= 8
+            }
+            title={'Registration'}
+            onPress={async () => {
+              let user = await createUser(fullName, email, password);
+              if (user.error) {
+                setError(user.error);
+              } else {
+                setError('');
+                setSuccess('You have successfully registered.');
+                setTimeout(() => navigation.goBack(), 3000);
+              }
+            }}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
