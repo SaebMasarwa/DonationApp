@@ -15,7 +15,6 @@ const SingleDonationItem = ({navigation, route}) => {
     state => state.donations.selectedDonationInformation,
   );
   const categoryInformation = route.params.categoryInformation;
-  console.log(route.params);
 
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>

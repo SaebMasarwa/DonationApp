@@ -20,14 +20,14 @@ import {updateSelecetedCategoryId} from '../../redux/reducers/Categories';
 import {updateSelectedDonationId} from '../../redux/reducers/Donations';
 import SingleDonationItem from '../../components/SingleDonationItem/SingleDonationItem';
 import {Routes} from '../../navigation/Routes';
+import {resetToInitialState} from '../../redux/reducers/User';
+import {logOut} from '../../api/user';
 
 const Home = ({navigation}) => {
   const categories = useSelector(state => state.categories);
   const donations = useSelector(state => state.donations);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
-
-  console.log(user);
 
   const [donationItems, setDonationItems] = useState([]);
   const [categoryPage, setCategoryPage] = useState(1);
@@ -70,11 +70,20 @@ const Home = ({navigation}) => {
               <Header title={user.displayName + ' 👋'} />
             </View>
           </View>
-          <Image
-            source={{uri: user.profileImage}}
-            style={style.profileImage}
-            resizeMode={'contain'}
-          />
+          <View>
+            <Image
+              source={{uri: user.profileImage}}
+              style={style.profileImage}
+              resizeMode={'contain'}
+            />
+            <Pressable
+              onPress={async () => {
+                dispatch(resetToInitialState());
+                await logOut();
+              }}>
+              <Header title={'Logout'} types={3} color={'#156CF7'} />
+            </Pressable>
+          </View>
         </View>
         <View style={style.searchBox}>
           <Search />
@@ -96,10 +105,7 @@ const Home = ({navigation}) => {
               if (isLoadingCategories) {
                 return;
               }
-              console.log(
-                'User has reached the end and we getting more data for page number',
-                categoryPage,
-              );
+
               setIsLoadingCategories(true);
               let newData = pagination(
                 categories.categories,
