@@ -74,5 +74,5 @@ yarn-error.log
 !.yarn/versions
 
 # Google-Service Keys
-android/app/google-services.json
-ios/GoogleService-Info.plist
+google-services.json
+GoogleService-Info.plist
